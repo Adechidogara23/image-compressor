@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Free QR Code Generator - Create QR Codes Online</title>
+<meta name="description" content="Generate QR codes for free. Create custom QR codes for websites, text, WiFi, and more. No signup required.">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: #f5f7fa;
+  color: #1a202c;
+  line-height: 1.6;
+  padding: 0 16px;
+}
+header {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 32px 0 16px;
+  text-align: center;
+}
+header h1 { font-size: 1.6rem; margin-bottom: 8px; }
+header p { color: #4a5568; font-size: 0.95rem; }
+.container { max-width: 720px; margin: 0 auto; }
+.card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 20px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+label { display: block; font-weight: 600; margin-bottom: 6px; font-size: 0.9rem; }
+input[type="text"] {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #cbd5e0;
+  border-radius: 8px;
+  font-size: 1rem;
+}
+.btn {
+  background: #3182ce;
+  color: #fff;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  width: 100%;
+  margin-top: 12px;
+}
+.btn:hover { background: #2b6cb0; }
+.btn:disabled { background: #a0aec0; cursor: not-allowed; }
+#qrcode {
+  display: flex;
+  justify-content: center;
+  margin-top: 24px;
+  padding: 16px;
+  background: #fff;
+  border-radius: 8px;
+}
+#qrcode img, #qrcode canvas { max-width: 100%; height: auto; }
+.ad-slot {
+  background: #edf2f7;
+  border: 1px dashed #cbd5e0;
+  border-radius: 8px;
+  padding: 20px;
+  text-align: center;
+  color: #a0aec0;
+  font-size: 0.8rem;
+  margin: 20px 0;
+}
+.guide { margin-top: 32px; }
+.guide h2 { font-size: 1.2rem; margin-bottom: 12px; }
+.guide h3 { font-size: 1rem; margin: 16px 0 8px; }
+.guide p, .guide li { color: #4a5568; font-size: 0.92rem; }
+.guide ol, .guide ul { padding-left: 20px; margin-bottom: 12px; }
+footer {
+  text-align: center;
+  padding: 32px 0;
+  color: #a0aec0;
+  font-size: 0.85rem;
+}
+footer a { color: #3182ce; text-decoration: none; margin: 0 8px; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Free QR Code Generator</h1>
+  <p>Create QR codes for websites, text, or anything else. No signup, no limits.</p>
+</header>
+
+<div class="container">
+
+  <!-- AD SLOT: paste your AdSense code here after approval -->
+  <div class="ad-slot">Ad space</div>
+
+  <div class="card">
+    <label for="textInput">Enter your text or website URL</label>
+    <input type="text" id="textInput" placeholder="e.g., https://example.com" value="">
+    <button class="btn" id="generateBtn">Generate QR Code</button>
+    
+    <div id="qrcode"></div>
+  </div>
+
+  <!-- AD SLOT: paste your AdSense code here after approval -->
+  <div class="ad-slot">Ad space</div>
+
+  <div class="guide">
+    <h2>How to Use the QR Code Generator</h2>
+    <ol>
+      <li>Type or paste your website link or text into the box above.</li>
+      <li>Tap <strong>Generate QR Code</strong>.</li>
+      <li>Your QR code will appear instantly. Right-tap or long-press it to save it to your phone.</li>
+    </ol>
+
+    <h3>What is a QR Code?</h3>
+    <p>A QR (Quick Response) code is a type of barcode that stores information. When you scan it with your phone camera, it instantly opens a website, shares text, or connects to WiFi.</p>
+
+    <h3>Where Can I Use These QR Codes?</h3>
+    <ul>
+      <li>On business cards to share your website or contact info.</li>
+      <li>On restaurant menus to show the digital menu.</li>
+      <li>On posters or flyers to link to your social media pages.</li>
+      <li>At events to share WiFi passwords instantly.</li>
+    </ul>
+
+    <h3>Frequently Asked Questions</h3>
+    <p><strong>Is it really free?</strong> Yes, completely free with no signup or limits. You can generate as many QR codes as you need.</p>
+    <p><strong>Do these QR codes expire?</strong> No. They are static QR codes, meaning they will work forever.</p>
+  </div>
+
+</div>
+
+<footer>
+  <p>&copy; <span id="year"></span> SmartAI Guides</p>
+  <p>
+    <a href="index.html">Home</a>
+    <a href="about.html">About</a>
+    <a href="contact.html">Contact</a>
+    <a href="privacy.html">Privacy</a>
+  </p>
+</footer>
+
+<script>
+document.getElementById('year').textContent = new Date().getFullYear();
+
+const textInput = document.getElementById('textInput');
+const generateBtn = document.getElementById('generateBtn');
+const qrcodeDiv = document.getElementById('qrcode');
+
+generateBtn.addEventListener('click', () => {
+  const text = textInput.value.trim();
+  if (!text) {
+    alert('Please enter some text or a website link first.');
+    return;
+  }
+  
+  qrcodeDiv.innerHTML = ''; // Clear previous QR code
+  
+  new QRCode(qrcodeDiv, {
+    text: text,
+    width: 256,
+    height: 256,
+    colorDark : "#1a202c",
+    colorLight : "#ffffff",
+    correctLevel : QRCode.CorrectLevel.H
+  });
+});
+
+// Generate a blank QR code on load as an example
+textInput.value = 'https://adechidogara23.github.io/image-compressor/';
+generateBtn.click();
+</script>
+
+</body>
+                                                           </html>
