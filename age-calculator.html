@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Free Age Calculator - Calculate Your Exact Age</title>
+<meta name="description" content="Calculate your exact age in years, months, days, and total days lived. Free online age calculator.">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f5f7fa; color: #1a202c; line-height: 1.6; padding: 0 16px; }
+header { max-width: 720px; margin: 0 auto; padding: 32px 0 16px; text-align: center; }
+header h1 { font-size: 1.6rem; margin-bottom: 8px; }
+header p { color: #4a5568; font-size: 0.95rem; }
+.container { max-width: 720px; margin: 0 auto; }
+.card { background: #fff; border-radius: 12px; padding: 24px; margin-bottom: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+label { display: block; font-weight: 600; margin-bottom: 6px; font-size: 0.9rem; }
+input[type="date"] { width: 100%; padding: 12px; border: 1px solid #cbd5e0; border-radius: 8px; font-size: 1rem; }
+.btn { background: #3182ce; color: #fff; border: none; padding: 12px 24px; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; width: 100%; margin-top: 12px; }
+.btn:hover { background: #2b6cb0; }
+.stats { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-top: 20px; }
+.stat-box { background: #f7fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px; text-align: center; }
+.stat-box .value { font-size: 1.5rem; font-weight: 700; color: #3182ce; }
+.stat-box .label { font-size: 0.8rem; color: #718096; text-transform: uppercase; }
+.total-box { grid-column: span 3; background: #ebf8ff; border-color: #bee3f8; }
+.total-box .value { color: #2b6cb0; }
+.ad-slot { background: #edf2f7; border: 1px dashed #cbd5e0; border-radius: 8px; padding: 20px; text-align: center; color: #a0aec0; font-size: 0.8rem; margin: 20px 0; }
+.guide { margin-top: 32px; }
+.guide h2 { font-size: 1.2rem; margin-bottom: 12px; }
+.guide h3 { font-size: 1rem; margin: 16px 0 8px; }
+.guide p, .guide li { color: #4a5568; font-size: 0.92rem; }
+footer { text-align: center; padding: 32px 0; color: #a0aec0; font-size: 0.85rem; }
+footer a { color: #3182ce; text-decoration: none; margin: 0 8px; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Age Calculator</h1>
+  <p>Find out your exact age in years, months, days, and total days lived.</p>
+  <nav style="margin-top: 16px;">
+    <a href="index.html" style="margin: 0 6px; color: #3182ce; text-decoration: none; font-weight: 600;">Image Compressor</a>
+    <a href="qr-generator.html" style="margin: 0 6px; color: #3182ce; text-decoration: none; font-weight: 600;">QR Generator</a>
+    <a href="word-counter.html" style="margin: 0 6px; color: #3182ce; text-decoration: none; font-weight: 600;">Word Counter</a>
+    <a href="age-calculator.html" style="margin: 0 6px; color: #3182ce; text-decoration: none; font-weight: 600;">Age Calculator</a>
+  </nav>
+</header>
+
+<div class="container">
+  <div class="ad-slot">Ad space</div>
+
+  <div class="card">
+    <label for="dob">Enter your date of birth</label>
+    <input type="date" id="dob">
+    <button class="btn" id="calcBtn">Calculate My Age</button>
+
+    <div class="stats" id="results" style="display:none;">
+      <div class="stat-box">
+        <div class="value" id="years">-</div>
+        <div class="label">Years</div>
+      </div>
+      <div class="stat-box">
+        <div class="value" id="months">-</div>
+        <div class="label">Months</div>
+      </div>
+      <div class="stat-box">
+        <div class="value" id="days">-</div>
+        <div class="label">Days</div>
+      </div>
+      <div class="stat-box total-box">
+        <div class="value" id="totalDays">-</div>
+        <div class="label">Total Days Lived</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="ad-slot">Ad space</div>
+
+  <div class="guide">
+    <h2>How to Use the Age Calculator</h2>
+    <ol>
+      <li>Tap the date box and select your date of birth.</li>
+      <li>Tap <strong>Calculate My Age</strong>.</li>
+      <li>See your exact age in years, months, days, and your total days lived.</li>
+    </ol>
+    <h3>Why Use an Age Calculator?</h3>
+    <p>Whether you need to know your exact age for a form, want to count how many days you have been alive, or are just curious, this tool gives you an instant, accurate answer.</p>
+  </div>
+</div>
+
+<footer>
+  <p>&copy; <span id="year"></span> SmartAI Guides</p>
+  <p>
+    <a href="index.html">Home</a>
+    <a href="about.html">About</a>
+    <a href="contact.html">Contact</a>
+    <a href="privacy.html">Privacy</a>
+  </p>
+</footer>
+
+<script>
+document.getElementById('year').textContent = new Date().getFullYear();
+
+const dob = document.getElementById('dob');
+const calcBtn = document.getElementById('calcBtn');
+const results = document.getElementById('results');
+
+calcBtn.addEventListener('click', () => {
+  if (!dob.value) { alert('Please select your date of birth first.'); return; }
+  
+  const birthDate = new Date(dob.value);
+  const today = new Date();
+  
+  if (birthDate > today) { alert('Date of birth cannot be in the future.'); return; }
+  
+  let years = today.getFullYear() - birthDate.getFullYear();
+  let months = today.getMonth() - birthDate.getMonth();
+  let days = today.getDate() - birthDate.getDate();
+  
+  if (days < 0) {
+    months--;
+    const lastMonth = new Date(today.getFullYear(), today.getMonth(), 0).getDate();
+    days += lastMonth;
+  }
+  if (months < 0) { years--; months += 12; }
+  
+  const totalDays = Math.floor((today - birthDate) / (1000 * 60 * 60 * 24));
+  
+  document.getElementById('years').textContent = years;
+  document.getElementById('months').textContent = months;
+  document.getElementById('days').textContent = days;
+  document.getElementById('totalDays').textContent = totalDays.toLocaleString();
+  results.style.display = 'grid';
+});
+</script>
+
+</body>
+    </html>
