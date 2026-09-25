@@ -23,8 +23,6 @@ input, textarea { width: 100%; padding: 10px; border: 1px solid #cbd5e0; border-
 .btn:hover { background: #2b6cb0; }
 .btn-secondary { background: #48bb78; }
 .btn-secondary:hover { background: #38a169; }
-.total-section { text-align: right; margin-top: 16px; font-size: 1.1rem; font-weight: 700; }
-.total-section span { color: #3182ce; }
 .ad-slot { background: #edf2f7; border: 1px dashed #cbd5e0; border-radius: 8px; padding: 20px; text-align: center; color: #a0aec0; font-size: 0.8rem; margin: 20px 0; }
 .guide { margin-top: 32px; }
 .guide h2 { font-size: 1.2rem; margin-bottom: 12px; }
@@ -32,9 +30,137 @@ input, textarea { width: 100%; padding: 10px; border: 1px solid #cbd5e0; border-
 .guide p, .guide li { color: #4a5568; font-size: 0.92rem; }
 footer { text-align: center; padding: 32px 0; color: #a0aec0; font-size: 0.85rem; }
 footer a { color: #3182ce; text-decoration: none; margin: 0 8px; }
+
+/* INVOICE PREVIEW */
+.invoice-preview {
+  background: #fff;
+  border-radius: 12px;
+  padding: 32px;
+  margin-bottom: 20px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  border-top: 4px solid #3182ce;
+}
+.inv-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding-bottom: 20px;
+  border-bottom: 2px solid #3182ce;
+  margin-bottom: 24px;
+  gap: 16px;
+}
+.inv-title {
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: #3182ce;
+  letter-spacing: 3px;
+}
+.inv-meta {
+  text-align: right;
+  font-size: 0.85rem;
+  color: #4a5568;
+  line-height: 1.8;
+}
+.inv-meta strong { color: #1a202c; }
+.inv-parties {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 28px;
+  gap: 24px;
+}
+.inv-party { flex: 1; }
+.inv-party-label {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  color: #718096;
+  letter-spacing: 1.5px;
+  margin-bottom: 6px;
+  font-weight: 700;
+}
+.inv-name {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #1a202c;
+}
+.invoice-preview table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+}
+.invoice-preview th {
+  background: #3182ce;
+  color: #fff;
+  text-align: left;
+  padding: 12px;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.invoice-preview th:last-child, .invoice-preview td:last-child { text-align: right; }
+.invoice-preview th:nth-child(2), .invoice-preview td:nth-child(2),
+.invoice-preview th:nth-child(3), .invoice-preview td:nth-child(3) { text-align: center; }
+.invoice-preview td {
+  padding: 12px;
+  border-bottom: 1px solid #e2e8f0;
+  font-size: 0.9rem;
+  color: #2d3748;
+}
+.inv-total-row {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 16px;
+  border-top: 2px solid #3182ce;
+}
+.inv-total-box {
+  text-align: right;
+  min-width: 200px;
+}
+.inv-total-label {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  color: #718096;
+  letter-spacing: 1.5px;
+  font-weight: 700;
+}
+.inv-total-amount {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: #3182ce;
+  margin-top: 4px;
+}
+.inv-footer-note {
+  margin-top: 32px;
+  padding-top: 16px;
+  border-top: 1px solid #e2e8f0;
+  font-size: 0.85rem;
+  color: #718096;
+  text-align: center;
+  font-style: italic;
+}
+
 @media (max-width: 600px) {
   .item-row { grid-template-columns: 1fr; }
   .row { grid-template-columns: 1fr; }
+  .invoice-preview { padding: 20px; }
+  .inv-header { flex-direction: column; gap: 8px; }
+  .inv-meta { text-align: left; }
+  .inv-parties { flex-direction: column; gap: 14px; }
+  .inv-title { font-size: 1.8rem; }
+}
+
+/* PRINT: only the invoice */
+@media print {
+  body { background: #fff; padding: 0; }
+  header, nav, .card, .ad-slot, .guide, footer { display: none !important; }
+  .container { max-width: 100%; padding: 0; margin: 0; }
+  .invoice-preview {
+    box-shadow: none;
+    border-radius: 0;
+    border-top: none;
+    padding: 0;
+    margin: 0;
+  }
+  @page { margin: 15mm; }
 }
 </style>
 </head>
@@ -53,23 +179,24 @@ footer a { color: #3182ce; text-decoration: none; margin: 0 8px; }
 </header>
 
 <div class="container">
+
   <div class="ad-slot">Ad space</div>
 
   <div class="card">
     <div class="row">
       <div>
         <label>Your Business Name</label>
-        <input type="text" id="bizName" placeholder="Your Company">
+        <input type="text" id="bizName" placeholder="Your Company" value="">
       </div>
       <div>
         <label>Client Name</label>
-        <input type="text" id="clientName" placeholder="Client Company">
+        <input type="text" id="clientName" placeholder="Client Company" value="">
       </div>
     </div>
     <div class="row">
       <div>
         <label>Invoice Number</label>
-        <input type="text" id="invNum" placeholder="INV-001">
+        <input type="text" id="invNum" placeholder="INV-001" value="INV-001">
       </div>
       <div>
         <label>Invoice Date</label>
@@ -81,18 +208,59 @@ footer a { color: #3182ce; text-decoration: none; margin: 0 8px; }
     <div id="items">
       <div class="item-row">
         <input type="text" placeholder="Description" class="item-desc">
-        <input type="number" placeholder="Qty" class="item-qty" value="1">
-        <input type="number" placeholder="Price" class="item-price" value="0">
-        <button class="remove-btn" onclick="this.parentElement.remove()">×</button>
+        <input type="number" placeholder="Qty" class="item-qty" value="1" min="1">
+        <input type="number" placeholder="Price" class="item-price" value="0" min="0">
+        <button class="remove-btn" onclick="this.parentElement.remove(); refreshInvoice();">×</button>
       </div>
     </div>
     <button class="btn" id="addItemBtn" style="background:#718096;">+ Add Item</button>
 
-    <div class="total-section">
-      Total: $<span id="totalDisplay">0.00</span>
+    <button class="btn btn-secondary" id="printBtn">Print / Save as PDF</button>
+  </div>
+
+  <!-- LIVE INVOICE PREVIEW (this is what prints) -->
+  <div class="invoice-preview" id="invoicePreview">
+    <div class="inv-header">
+      <div class="inv-title">INVOICE</div>
+      <div class="inv-meta">
+        <div><strong>Invoice #:</strong> <span id="pvInvNum">INV-001</span></div>
+        <div><strong>Date:</strong> <span id="pvInvDate">—</span></div>
+      </div>
     </div>
 
-    <button class="btn btn-secondary" id="printBtn">Print / Save as PDF</button>
+    <div class="inv-parties">
+      <div class="inv-party">
+        <div class="inv-party-label">From</div>
+        <div class="inv-name" id="pvBizName">Your Business</div>
+      </div>
+      <div class="inv-party">
+        <div class="inv-party-label">Bill To</div>
+        <div class="inv-name" id="pvClientName">Client Name</div>
+      </div>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Description</th>
+          <th>Qty</th>
+          <th>Price</th>
+          <th>Amount</th>
+        </tr>
+      </thead>
+      <tbody id="pvItems">
+        <tr><td colspan="4" style="text-align:center; color:#a0aec0; padding:20px;">Add items above to see them here</td></tr>
+      </tbody>
+    </table>
+
+    <div class="inv-total-row">
+      <div class="inv-total-box">
+        <div class="inv-total-label">Total</div>
+        <div class="inv-total-amount" id="pvTotal">$0.00</div>
+      </div>
+    </div>
+
+    <div class="inv-footer-note">Thank you for your business.</div>
   </div>
 
   <div class="ad-slot">Ad space</div>
@@ -104,11 +272,13 @@ footer a { color: #3182ce; text-decoration: none; margin: 0 8px; }
       <li>Enter your business name and your client's name.</li>
       <li>Add an invoice number and date.</li>
       <li>List each item or service with quantity and price.</li>
-      <li>Tap <strong>Print / Save as PDF</strong> to generate your invoice.</li>
+      <li>Tap <strong>Print / Save as PDF</strong>. Only the invoice will print — clean and professional.</li>
     </ol>
+
     <h3>Why Use This Tool?</h3>
     <p>Freelancers and small business owners need professional invoices without paying for expensive software. This tool is free, works on any device, and lets you save your invoice as a PDF using your phone's built-in print option.</p>
   </div>
+
 </div>
 
 <footer>
@@ -124,39 +294,89 @@ footer a { color: #3182ce; text-decoration: none; margin: 0 8px; }
 <script>
 document.getElementById('year').textContent = new Date().getFullYear();
 
-function updateTotal() {
-  let total = 0;
-  document.querySelectorAll('.item-row').forEach(row => {
-    const qty = parseFloat(row.querySelector('.item-qty').value) || 0;
-    const price = parseFloat(row.querySelector('.item-price').value) || 0;
-    total += qty * price;
-  });
-  document.getElementById('totalDisplay').textContent = total.toFixed(2);
+const bizName = document.getElementById('bizName');
+const clientName = document.getElementById('clientName');
+const invNum = document.getElementById('invNum');
+const invDate = document.getElementById('invDate');
+const itemsContainer = document.getElementById('items');
+const addItemBtn = document.getElementById('addItemBtn');
+const printBtn = document.getElementById('printBtn');
+
+// Set today's date by default
+if (!invDate.value) {
+  invDate.valueAsDate = new Date();
 }
 
-document.getElementById('addItemBtn').addEventListener('click', () => {
-  const items = document.getElementById('items');
+function formatCurrency(num) {
+  return '$' + num.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+}
+
+function refreshInvoice() {
+  document.getElementById('pvBizName').textContent = bizName.value.trim() || 'Your Business';
+  document.getElementById('pvClientName').textContent = clientName.value.trim() || 'Client Name';
+  document.getElementById('pvInvNum').textContent = invNum.value.trim() || 'INV-001';
+
+  if (invDate.value) {
+    const d = new Date(invDate.value);
+    document.getElementById('pvInvDate').textContent =
+      d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+  } else {
+    document.getElementById('pvInvDate').textContent = '—';
+  }
+
+  const tbody = document.getElementById('pvItems');
+  tbody.innerHTML = '';
+  let total = 0;
+  let hasItems = false;
+
+  document.querySelectorAll('.item-row').forEach(row => {
+    const desc = row.querySelector('.item-desc').value.trim();
+    const qty = parseFloat(row.querySelector('.item-qty').value) || 0;
+    const price = parseFloat(row.querySelector('.item-price').value) || 0;
+    const amount = qty * price;
+
+    if (desc || amount > 0) {
+      hasItems = true;
+      total += amount;
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${desc || 'Item'}</td>
+        <td>${qty}</td>
+        <td>${formatCurrency(price)}</td>
+        <td>${formatCurrency(amount)}</td>
+      `;
+      tbody.appendChild(tr);
+    }
+  });
+
+  if (!hasItems) {
+    tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:#a0aec0; padding:20px;">Add items above to see them here</td></tr>';
+  }
+
+  document.getElementById('pvTotal').textContent = formatCurrency(total);
+}
+
+document.addEventListener('input', refreshInvoice);
+
+addItemBtn.addEventListener('click', () => {
   const newRow = document.createElement('div');
   newRow.className = 'item-row';
   newRow.innerHTML = `
     <input type="text" placeholder="Description" class="item-desc">
-    <input type="number" placeholder="Qty" class="item-qty" value="1">
-    <input type="number" placeholder="Price" class="item-price" value="0">
-    <button class="remove-btn" onclick="this.parentElement.remove(); updateTotal();">×</button>
+    <input type="number" placeholder="Qty" class="item-qty" value="1" min="1">
+    <input type="number" placeholder="Price" class="item-price" value="0" min="0">
+    <button class="remove-btn" onclick="this.parentElement.remove(); refreshInvoice();">×</button>
   `;
-  items.appendChild(newRow);
+  itemsContainer.appendChild(newRow);
+  refreshInvoice();
 });
 
-document.addEventListener('input', (e) => {
-  if (e.target.classList.contains('item-qty') || e.target.classList.contains('item-price')) {
-    updateTotal();
-  }
-});
-
-document.getElementById('printBtn').addEventListener('click', () => {
-  updateTotal();
+printBtn.addEventListener('click', () => {
+  refreshInvoice();
   window.print();
 });
+
+refreshInvoice();
 </script>
 
 </body>
